@@ -1,0 +1,16 @@
+import { Spinner } from "@/components/ui/spinner";
+import { FC } from "react";
+
+const AuthLoadingView: FC = () => {
+  return (
+    <div
+      className="flex items-center justify-center h-screen bg-background"
+    >
+      <Spinner
+        className="size-6 text-ring"
+      />
+    </div>
+  )
+}
+
+export { AuthLoadingView }

@@ -18,7 +18,7 @@ interface FileExplorerProps {
 
 const FileExplorer: FC<FileExplorerProps> = (props) => {
   const { projectId } = props;
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
   const [collapseKey, setCollapseKey] = useState<number>(0);
   const [creating, setCreating] = useState<"file" | "folder" | null>(null)
 

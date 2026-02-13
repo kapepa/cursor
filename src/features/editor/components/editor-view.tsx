@@ -1,0 +1,87 @@
+import { FC, useRef } from "react";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { TopNavigation } from "./top-navigation";
+import { useEditor } from "../hooks/use-editor";
+import { FileBreadcrumbs } from "./file-breadcrumbs";
+import { useFile, useUpdateFile } from "@/features/projects/hooks/use-files";
+import Image from "next/image";
+import { CodeEditor } from "./code-editor";
+
+interface EditorViewProps {
+  projectId: Id<"projects">
+}
+
+const EditorView: FC<EditorViewProps> = (props) => {
+  const { projectId } = props;
+  const { activeTabId } = useEditor(projectId);
+  const activeFile = useFile(activeTabId)
+  const updateFile = useUpdateFile();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const isActiveFileBinary = activeFile && activeFile.storageId;
+  const isActiveFileText = activeFile && !activeFile.storageId;
+
+  return (
+    <div
+      className="h-full flex flex-col"
+    >
+      <div
+        className="flex items-center"
+      >
+        <TopNavigation
+          projectId={projectId}
+        />
+      </div>
+      {
+        activeTabId && (
+          <FileBreadcrumbs
+            projectId={projectId}
+          />
+        )
+      }
+      <div
+        className="flex min-h-0 bg-background"
+      >
+        {!activeFile && (
+          <div
+            className="size-full flex items-center justify-center"
+          >
+            <Image
+              src="/logo-alt.svg"
+              alt="Cursor"
+              width={50}
+              height={50}
+              className="opacity-25"
+            />
+          </div>
+        )}
+        {
+          isActiveFileText && (
+            <CodeEditor
+              key={activeFile._id}
+              fileName={activeFile.name}
+              initialValue={activeFile.content}
+              onChange={(content: string) => {
+                if (timeoutRef.current) {
+                  clearTimeout(timeoutRef.current)
+                }
+
+                timeoutRef.current = setTimeout(() => {
+                  updateFile({ id: activeFile._id, content })
+                }, 1500)
+              }}
+            />
+          )
+        }
+        {
+          isActiveFileBinary
+          && (
+            <p>TOD: Implement binary preview</p>
+          )
+        }
+      </div>
+    </div>
+  )
+}
+
+export { EditorView }

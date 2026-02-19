@@ -1,4 +1,6 @@
-import { FC, useRef } from "react";
+"use client"
+
+import { FC, useEffect, useRef } from "react";
 import { Id } from "../../../../convex/_generated/dataModel";
 import { TopNavigation } from "./top-navigation";
 import { useEditor } from "../hooks/use-editor";
@@ -20,6 +22,12 @@ const EditorView: FC<EditorViewProps> = (props) => {
 
   const isActiveFileBinary = activeFile && activeFile.storageId;
   const isActiveFileText = activeFile && !activeFile.storageId;
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [activeTabId])
 
   return (
     <div
